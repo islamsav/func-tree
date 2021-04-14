@@ -11,6 +11,7 @@ public interface Configuration extends Config {
     String path();
 
     @Key("project.name")
+    @DefaultValue("web-plugin")
     String project();
 
     @Key("project.map.route")

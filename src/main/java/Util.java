@@ -14,7 +14,7 @@ public class Util {
     }
 
     public static void createTxtFile(List<String> list) {
-        File fileTxt = new File("autotest_map.txt");
+        File fileTxt = new File("autotest_map");
         try (FileWriter writer = new FileWriter(fileTxt, false)) {
             for (String tag : list) {
                 writer.write(tag + "\n");
