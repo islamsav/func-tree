@@ -7,26 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapGenerator {
-    private final String PROJECT_NAME = "project_name";
+    private String projectName = "project_name";
+    private List<String> list = new ArrayList<>();
 
-    private final Configuration configuration = ConfigFactory.create(
+
+    private final Configuration CONFIG = ConfigFactory.create(
             Configuration.class,
             System.getProperties());
 
-    private final String FEATURES_PATH = configuration.path().replace(PROJECT_NAME, configuration.project());
+    private final String FEATURES_PATH = CONFIG.path().replace(projectName, CONFIG.project());
     private final Path PARENT = Paths.get(FEATURES_PATH);
-    private List<String> list = new ArrayList<>();
 
     public void create() throws IOException {
-        list.add("graph TD;");
-        list.add(PARENT.getFileName().toString() + "{WEB}");
+        list.add(CONFIG.route());
+        list.add(PARENT.getFileName().toString() + "{" + CONFIG.project().toUpperCase() + "}");
         Files.walkFileTree(PARENT, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 Path parentName = dir.getParent().getFileName();
                 Path currentName = dir.getFileName();
                 if (parentName != null && !parentName.getFileName().toString().equals("resources")) {
-                    list.add(format1(parentName.toString(), currentName.toString()));
+                    list.add(format1(parentName.toString(), currentName.toString(), ArrowFormat.DEFAULT));
                 }
                 return FileVisitResult.CONTINUE;
             }
@@ -34,11 +35,18 @@ public class MapGenerator {
         Util.createTxtFile(list);
     }
 
-    private String format1(String parent, String current) {
-        return String.format("%s --> %s", parent, current);
+    /**
+     * Рисует квадратные ноды
+     */
+    private String format1(String parent, String current, ArrowFormat format) {
+        return String.format("%s %s %s", parent, format.getFormat(), current);
     }
 
-//    https://mermaid-js.github.io/mermaid-live-editor
-//    https://mermaid-js.github.io/mermaid/
+    /**
+     * Рисует закругленные ноды
+     */
+    private String format2(String parent, String current, ArrowFormat format) {
+        return String.format("%s([%s]) %s %s([%s])", parent, parent, format.getFormat(), current, current);
+    }
 }
 

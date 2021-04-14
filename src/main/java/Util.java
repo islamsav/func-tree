@@ -8,8 +8,8 @@ public class Util {
     public static String pathBuilder(String... path) {
         StringBuilder sb = new StringBuilder();
         for (String s : path) {
-            sb.append(s).append("/");
-//            sb.append(s).append(File.separator);
+//            sb.append(s).append("/");
+            sb.append(s).append(File.separator);
         }
         return new String(sb);
     }
